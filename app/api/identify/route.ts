@@ -22,8 +22,11 @@ export async function POST(req: Request) {
 
   const key = process.env.RENAISS_API_KEY;
   const secret = process.env.RENAISS_API_SECRET;
+  // Materialize the bytes into a fresh Blob — re-streaming the consumed File
+  // through undici can drop the body and make the upstream fetch hang/reset.
+  const bytes = await file.arrayBuffer();
   const body = new FormData();
-  body.append("file", file, file.name || "card.jpg");
+  body.append("file", new Blob([bytes], { type: file.type || "image/jpeg" }), file.name || "card.jpg");
   try {
     const res = await fetch(`${INDEX}/v1/graded/by-image`, {
       method: "POST",

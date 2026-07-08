@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "snapshot": "node scripts/fetch.mjs",
-    "check": "node lib/ev.ts"
+    "scan": "node scripts/scan.mjs",
+    "check": "node lib/ev.ts && node lib/scanner.ts"
   },
   "dependencies": {
     "next": "^15.3.0",

@@ -1,7 +1,11 @@
 import data from "@/data/packs.json";
 import { type Pack } from "@/lib/ev";
+import scannerData from "@/data/scanner.json";
 import PackCard from "@/components/PackCard";
 import Simulator, { type SimPack } from "@/components/Simulator";
+import Scanner from "@/components/Scanner";
+import CertCheck from "@/components/CertCheck";
+import { type Listing } from "@/lib/scanner";
 import { timeAgo } from "@/lib/format";
 
 export default function Home() {
@@ -39,6 +43,14 @@ export default function Home() {
         {packs.map((p) => (
           <PackCard key={p.slug} pack={p} updatedAt={data.generatedAt} />
         ))}
+      </div>
+
+      <div className="mt-6">
+        <Scanner data={scannerData as { listings: Listing[]; generatedAt: string }} />
+      </div>
+
+      <div className="mt-6">
+        <CertCheck />
       </div>
 
       <div className="mt-6">

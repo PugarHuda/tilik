@@ -139,17 +139,14 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
         <summary className="cursor-pointer select-none hover:text-zinc-300">
           Show the {s.n} real pulls behind these numbers
         </summary>
+        <p className="mt-1 text-[11px] text-zinc-600">
+          Snapshot of past pulls. This is a perpetual pool — cards rotate in and out, so a given card
+          may no longer be in the pack.
+        </p>
         <ul className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
           {pack.pulls.map((p) => (
             <li key={p.tokenId} className="flex justify-between gap-2 tabular-nums">
-              <a
-                href={`https://www.renaiss.xyz/card/${p.tokenId}`}
-                target="_blank"
-                rel="noreferrer"
-                className="truncate text-zinc-500 hover:text-emerald-300"
-              >
-                card/{p.tokenId.slice(0, 10)}…
-              </a>
+              <span className="truncate text-zinc-600">card/{p.tokenId.slice(0, 10)}…</span>
               <span className="shrink-0 text-zinc-400">
                 {p.tier} · {usd(p.fmv)} · {timeAgo(p.pulledAt)}
               </span>

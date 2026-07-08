@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { normalizeGraded } from "@/lib/graded";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60; // by-image runs AI recognition — can exceed the 10s default
 
 const INDEX = "https://api.renaissos.com";
 const MAX = 15 * 1024 * 1024;

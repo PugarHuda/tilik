@@ -116,7 +116,8 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
         <h3 className="mb-2 text-sm font-semibold text-zinc-200">
           Observed odds by tier <span className="text-zinc-500">(last {s.n} pulls)</span>
         </h3>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[20rem] text-sm">
           <thead>
             <tr className="text-left text-[11px] uppercase tracking-wide text-zinc-500">
               <th className="pb-1 font-medium">Tier</th>
@@ -136,6 +137,7 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Provenance */}

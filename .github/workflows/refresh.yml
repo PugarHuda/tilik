@@ -1,0 +1,33 @@
+name: Refresh pack snapshot
+# Packs-only refresh (no Index calls) so a rate limit can never overwrite good
+# data with nulls. Refresh the Index cross-check manually via `npm run scan`.
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run snapshot
+      - run: node lib/ev.ts # gate: don't commit data that breaks the engine
+      - name: Commit if changed
+        run: |
+          git config user.name "tilik-bot"
+          git config user.email "actions@github.com"
+          if ! git diff --quiet -- data/packs.json; then
+            git add data/packs.json
+            git commit -m "chore: refresh pack snapshot [skip ci]"
+            git push
+          else
+            echo "No change."
+          fi

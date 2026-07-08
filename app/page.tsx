@@ -33,7 +33,7 @@ export default function Home() {
           actually pull, and a fairness cross-check against Renaiss&rsquo; own stated EV — so you can{" "}
           <span className="text-zinc-200">inspect before you rip</span>.
         </p>
-        <p className="mt-2 text-xs text-zinc-600">
+        <p className="mt-2 text-xs text-zinc-500">
           Data: Renaiss CLI (beta) · snapshot {timeAgo(data.generatedAt)}. Every number below is a
           labeled estimate, not a verified market fact.
         </p>
@@ -87,6 +87,16 @@ export default function Home() {
             </dd>
           </div>
           <div>
+            <dt className="font-semibold text-zinc-200">What the cross-check can and can&rsquo;t reach</dt>
+            <dd>
+              The independent cross-check runs on <span className="text-zinc-300">marketplace listings</span>,
+              which carry a grading cert. Pack pulls don&rsquo;t expose a cert, and because the pool is
+              perpetual, a pulled card rotates out and can no longer be looked up — so we can&rsquo;t
+              independently re-price the exact cards inside a pack. Read the cross-check as evidence
+              about Renaiss&rsquo; FMV methodology generally, not proof about one specific pack.
+            </dd>
+          </div>
+          <div>
             <dt className="font-semibold text-zinc-200">This is a decision-support tool, not a verdict</dt>
             <dd>
               A house edge is normal and expected in gacha — showing it is about trust, not
@@ -97,9 +107,10 @@ export default function Home() {
         </dl>
       </section>
 
-      <footer className="mt-8 text-center text-xs text-zinc-600">
-        Tilik — an independent, pro-collector transparency tool. Not affiliated with Renaiss.
-        Estimates only.
+      <footer className="mt-8 text-center text-xs leading-relaxed text-zinc-500">
+        Tilik — an independent, pro-collector transparency tool. Not affiliated with, or endorsed by,
+        Renaiss. All figures are labeled estimates from beta data — not verified market facts, and not
+        financial advice.
       </footer>
     </main>
   );

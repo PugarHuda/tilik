@@ -35,7 +35,9 @@ export type Stats = {
   claimGap: number; // empiricalMean - officialEV (how far reality sits from the claim)
   tiers: TierRow[];
   histogram: Bin[];
-  verdict: "positive" | "roughly-fair" | "negative";
+  // "top-heavy": mean is +EV but most single pulls lose — the average is
+  // carried by rare chase hits. Kept distinct from "positive" for honesty.
+  verdict: "positive" | "top-heavy" | "roughly-fair" | "negative";
 };
 
 const sum = (a: number[]) => a.reduce((x, y) => x + y, 0);
@@ -87,8 +89,15 @@ export function packStats(pack: Pack): Stats {
   const variance = n > 1 ? fmvs.reduce((a, v) => a + (v - mean) ** 2, 0) / (n - 1) : 0;
   const stdErr = n > 0 ? Math.sqrt(variance) / Math.sqrt(n) : 0;
   const evRatioEmpirical = rip ? mean / rip : 0;
+  const pProfit = n ? fmvs.filter((v) => v > rip).length / n : 0;
   const verdict: Stats["verdict"] =
-    evRatioEmpirical >= 1.02 ? "positive" : evRatioEmpirical >= 0.98 ? "roughly-fair" : "negative";
+    evRatioEmpirical >= 1.02
+      ? pProfit >= 0.5
+        ? "positive" // +EV and most single pulls profit
+        : "top-heavy" // +EV on average, but most pulls lose — chase-driven
+      : evRatioEmpirical >= 0.98
+        ? "roughly-fair"
+        : "negative";
   return {
     n,
     ripPrice: rip,
@@ -102,7 +111,7 @@ export function packStats(pack: Pack): Stats {
     max: n ? fmvs[n - 1] : 0,
     evRatioOfficial: rip ? pack.officialEV / rip : 0,
     evRatioEmpirical,
-    pProfit: n ? fmvs.filter((v) => v > rip).length / n : 0,
+    pProfit,
     claimGap: mean - pack.officialEV,
     tiers: tierBreakdown(pack.pulls),
     histogram: histogram(fmvs, rip),
@@ -194,6 +203,11 @@ function demo() {
   assert(Math.abs(s.pProfit - 0.5) < 1e-9, "pProfit 2/4");
   assert(s.verdict === "positive", "verdict");
   assert(s.tiers[0].tier === "A", "top tier first by mean fmv");
+
+  // top-heavy: mean well above rip, but 3 of 4 pulls lose → not a plain +EV.
+  const th = packStats({ ...pack, ripPrice: 15, officialEV: 15 });
+  assert(th.empiricalMean / 15 >= 1.02 && th.pProfit < 0.5, "setup: +EV mean, minority profit");
+  assert(th.verdict === "top-heavy", "verdict is top-heavy, not positive");
   assert(sum(s.histogram.map((b) => b.count)) === 4, "histogram covers all pulls");
   // the $200 pull is 20× rip → lands in the 20×+ chase bin
   assert(s.histogram.find((b) => b.label === "20×+")!.count === 1, "chase bin");

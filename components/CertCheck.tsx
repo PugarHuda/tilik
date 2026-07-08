@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { usd } from "@/lib/format";
 
 type Result = {
@@ -41,6 +42,22 @@ export default function CertCheck() {
     }
   }
 
+  async function identify(file: File) {
+    setCert("");
+    setLoading(true);
+    setRes(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch("/api/identify", { method: "POST", body: fd });
+      setRes(await r.json());
+    } catch {
+      setRes({ cert: "", found: false, error: "Upload failed." });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section className="rounded-2xl bg-zinc-900/70 p-5 ring-1 ring-white/10 sm:p-6">
       <h2 className="text-xl font-bold text-zinc-50">Check any graded card</h2>
@@ -60,7 +77,7 @@ export default function CertCheck() {
           value={cert}
           onChange={(e) => setCert(e.target.value)}
           placeholder="e.g. PSA82643863"
-          className="min-w-0 flex-1 rounded-lg bg-zinc-800/60 px-3 py-2 text-sm text-zinc-100 ring-1 ring-white/10 outline-none placeholder:text-zinc-600 focus:ring-emerald-500/40"
+          className="min-w-0 flex-1 rounded-lg bg-zinc-800/60 px-3 py-2 text-sm text-zinc-100 ring-1 ring-white/10 outline-none placeholder:text-zinc-500 focus:ring-emerald-500/40"
         />
         <button
           type="submit"
@@ -71,13 +88,28 @@ export default function CertCheck() {
         </button>
       </form>
 
-      <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-500">
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
         <span>try:</span>
         {EXAMPLES.map((ex) => (
           <button key={ex} onClick={() => lookup(ex)} className="underline hover:text-zinc-300">
             {ex}
           </button>
         ))}
+        <span className="text-zinc-600">·</span>
+        <label className="cursor-pointer underline hover:text-zinc-300">
+          identify from a photo
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) identify(f);
+              e.target.value = "";
+            }}
+          />
+        </label>
+        <span className="rounded bg-zinc-800 px-1 text-[10px] text-zinc-500">beta</span>
       </div>
 
       {res && (
@@ -86,12 +118,12 @@ export default function CertCheck() {
             <>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   {res.card?.imageUrl && (
-                    <img
+                    <Image
                       src={res.card.imageUrl}
                       alt={res.card?.name ?? "card"}
-                      loading="lazy"
+                      width={64}
+                      height={64}
                       className="h-16 w-16 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
                     />
                   )}
@@ -135,7 +167,7 @@ export default function CertCheck() {
           )}
         </div>
       )}
-      <p className="mt-3 text-[11px] text-zinc-600">
+      <p className="mt-3 text-[11px] text-zinc-500">
         Independent valuations via{" "}
         <a href="https://index.renaissos.com" target="_blank" rel="noreferrer" className="underline hover:text-zinc-400">
           Renaiss OS Index

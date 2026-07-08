@@ -1,0 +1,43 @@
+import { NextResponse } from "next/server";
+import { normalizeGraded } from "@/lib/graded";
+
+export const dynamic = "force-dynamic";
+
+const INDEX = "https://api.renaissos.com";
+const MAX = 15 * 1024 * 1024;
+const OK = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+
+export async function POST(req: Request) {
+  let file: FormDataEntryValue | null;
+  try {
+    file = (await req.formData()).get("file");
+  } catch {
+    return NextResponse.json({ found: false, error: "Expected a multipart image upload." }, { status: 400 });
+  }
+  if (!(file instanceof File)) return NextResponse.json({ found: false, error: "No image provided." }, { status: 400 });
+  if (file.size > MAX) return NextResponse.json({ found: false, error: "Image exceeds 15 MB." }, { status: 400 });
+  if (file.type && !OK.includes(file.type))
+    return NextResponse.json({ found: false, error: "Use a JPEG, PNG, WebP, or AVIF image." }, { status: 400 });
+
+  const key = process.env.RENAISS_API_KEY;
+  const secret = process.env.RENAISS_API_SECRET;
+  const body = new FormData();
+  body.append("file", file, file.name || "card.jpg");
+  try {
+    const res = await fetch(`${INDEX}/v1/graded/by-image`, {
+      method: "POST",
+      body,
+      headers: key && secret ? { "X-Api-Key": key, "X-Api-Secret": secret } : {},
+    });
+    if (res.status === 429)
+      return NextResponse.json({ found: false, error: "The index is rate-limited right now (10/day). Try again later." }, { status: 429 });
+    if (res.status === 422)
+      return NextResponse.json({ found: false, error: "Couldn't read a graded card from that image — try a clearer, straight-on photo of the slab." }, { status: 200 });
+    if (!res.ok) return NextResponse.json({ found: false, error: `Index returned ${res.status}.` }, { status: 502 });
+    const out = normalizeGraded(await res.json());
+    if (!out.found) out.error = "Couldn't identify a graded card in that image.";
+    return NextResponse.json(out);
+  } catch {
+    return NextResponse.json({ found: false, error: "Could not reach the independent index." }, { status: 502 });
+  }
+}

@@ -4,6 +4,7 @@ import { ValueHistogram } from "./Charts";
 
 const VERDICT = {
   positive: { label: "Leans +EV", cls: "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30" },
+  "top-heavy": { label: "+EV but top-heavy", cls: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
   "roughly-fair": { label: "Roughly fair", cls: "bg-amber-500/15 text-amber-300 ring-amber-500/30" },
   negative: { label: "Leans −EV", cls: "bg-zinc-500/15 text-zinc-300 ring-zinc-500/30" },
 } as const;
@@ -35,10 +36,13 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
   const skew = s.pProfit < 0.5;
 
   return (
-    <section className="rounded-2xl bg-zinc-900/70 p-5 ring-1 ring-white/10 sm:p-6">
+    <section id={pack.slug} className="scroll-mt-4 rounded-2xl bg-zinc-900/70 p-5 ring-1 ring-white/10 sm:p-6">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-zinc-50">{pack.name}</h2>
+          <a href={`#${pack.slug}`} className="group inline-flex items-baseline gap-1.5">
+            <h2 className="text-xl font-bold text-zinc-50">{pack.name}</h2>
+            <span className="text-zinc-600 opacity-0 transition group-hover:opacity-100">#</span>
+          </a>
           <p className="text-xs text-zinc-500">
             {pack.packType} gacha · by {pack.author}
           </p>
@@ -113,9 +117,12 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
 
       {/* Tier odds */}
       <div className="mt-5">
-        <h3 className="mb-2 text-sm font-semibold text-zinc-200">
+        <h3 className="mb-0.5 text-sm font-semibold text-zinc-200">
           Observed odds by tier <span className="text-zinc-500">(last {s.n} pulls)</span>
         </h3>
+        <p className="mb-2 text-[11px] text-zinc-500">
+          Renaiss&rsquo; own tiers, ranked here by observed average value (A = highest, C = floor).
+        </p>
         <div className="overflow-x-auto">
         <table className="w-full min-w-[20rem] text-sm">
           <thead>
@@ -145,14 +152,14 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
         <summary className="cursor-pointer select-none hover:text-zinc-300">
           Show the {s.n} real pulls behind these numbers
         </summary>
-        <p className="mt-1 text-[11px] text-zinc-600">
+        <p className="mt-1 text-[11px] text-zinc-500">
           Snapshot of past pulls. This is a perpetual pool — cards rotate in and out, so a given card
           may no longer be in the pack.
         </p>
         <ul className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
           {pack.pulls.map((p) => (
             <li key={p.tokenId} className="flex justify-between gap-2 tabular-nums">
-              <span className="truncate text-zinc-600">card/{p.tokenId.slice(0, 10)}…</span>
+              <span className="truncate text-zinc-500">card/{p.tokenId.slice(0, 10)}…</span>
               <span className="shrink-0 text-zinc-400">
                 {p.tier} · {usd(p.fmv)} · {timeAgo(p.pulledAt)}
               </span>
@@ -161,7 +168,7 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
         </ul>
       </details>
 
-      <p className="mt-4 border-t border-white/5 pt-3 text-[11px] leading-relaxed text-zinc-600">
+      <p className="mt-4 border-t border-white/5 pt-3 text-[11px] leading-relaxed text-zinc-500">
         Estimate under the <span className="text-zinc-400">observed-pulls</span> basis. Source:
         Renaiss CLI (beta) · sample: last {s.n} pulls · snapshot {timeAgo(updatedAt)}. Observed
         pulls are a small sample, not a guarantee of future draws — treat as an experimental

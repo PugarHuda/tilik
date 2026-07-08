@@ -9,7 +9,12 @@ const COLOR: Record<Bin["kind"], string> = {
 };
 
 export function ValueHistogram({ bins }: { bins: Bin[] }) {
+  const total = bins.reduce((a, b) => a + b.count, 0);
+  const label =
+    `Histogram of ${total} pulls by value relative to rip price: ` +
+    bins.map((b) => `${b.label} ${b.count}`).join(", ");
   return (
+    <div role="img" aria-label={label}>
     <ResponsiveContainer width="100%" height={170}>
       <BarChart data={bins} margin={{ top: 8, right: 8, bottom: 0, left: -22 }}>
         <XAxis
@@ -43,5 +48,6 @@ export function ValueHistogram({ bins }: { bins: Bin[] }) {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }

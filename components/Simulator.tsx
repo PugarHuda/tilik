@@ -109,6 +109,14 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
         <h3 className="mb-1 text-sm font-semibold text-zinc-200">
           P&L distribution over {TRIALS.toLocaleString()} simulated runs
         </h3>
+        <div
+          role="img"
+          aria-label={`P&L distribution over ${TRIALS} simulated runs of ${rips} rips: expected ${signed(
+            sim.mean,
+          )}, ${(sim.pProfit * 100).toFixed(0)}% chance of profit, typical range ${signed(
+            sim.p10,
+          )} to ${signed(sim.p90)}.`}
+        >
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={bins} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
             <XAxis
@@ -140,7 +148,8 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        <p className="mt-2 text-[11px] leading-relaxed text-zinc-600">
+        </div>
+        <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
           Best of {TRIALS.toLocaleString()} runs: {signed(sim.best)} · worst: {signed(sim.worst)}. The
           right tail (rare high-value pulls) is clipped for readability. Resampled from a 30-pull
           sample — an illustration of variance, not a prediction of your outcome.

@@ -40,10 +40,16 @@ FMV against an **independent, sale-based estimate** from the [Renaiss OS Index](
   independent estimate, a pack EV built on it may be optimistic.
 - **On-chain provenance** — each listing links its real BNB Chain transfer/mint/sell events to
   BscScan — the record behind Renaiss' "verifiable on-chain" claim.
-- **Check any graded card** — paste a PSA / CGC / BGS cert for an on-demand independent valuation
-  (with the card image).
+- **Check any graded card** — paste a PSA / CGC / BGS cert, or **identify from a photo** of the slab
+  (Index `by-image`), for an on-demand independent valuation with the card image.
 - **Confidence interval** — the observed-pull EV carries a 95% CI, so the small-sample noise is
   visible rather than hidden behind a single number.
+- **Honest verdicts** — a pack whose mean beats the rip but where most pulls still lose is labeled
+  "+EV but top-heavy", not a plain "+EV" — the badge factors in P(profit), not just the average.
+
+Card art is served through `next/image` (the source renders are multi-MB), charts carry text
+`aria-label`s, and a daily GitHub Action refreshes the pack snapshot (packs-only, so a rate limit
+can never overwrite good data). Not affiliated with Renaiss; estimates only, not financial advice.
 
 Real example found in the data: cert `PSA82643863` — Renaiss FMV **$40.00**, ask **$102.00**,
 independent estimate **$16.62** (last sale 2026-06-17, trending −18.7%).

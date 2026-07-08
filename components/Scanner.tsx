@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { listingSignals, type Listing, type Band } from "@/lib/scanner";
 import { usd, ratio } from "@/lib/format";
 
@@ -31,12 +32,12 @@ function Row({ l }: { l: Listing }) {
   return (
     <li className="rounded-xl bg-zinc-800/30 p-4 ring-1 ring-white/5">
       <div className="flex items-start gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         {l.image && (
-          <img
+          <Image
             src={l.image}
             alt={l.name}
-            loading="lazy"
+            width={64}
+            height={64}
             className="h-16 w-16 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
           />
         )}
@@ -99,14 +100,14 @@ function Row({ l }: { l: Listing }) {
                   {t.type} · {t.txHash.slice(0, 14)}…
                 </a>
                 {t.to && (
-                  <span className="shrink-0 text-zinc-600">
+                  <span className="shrink-0 text-zinc-500">
                     → {t.to.slice(0, 6)}…{t.to.slice(-4)}
                   </span>
                 )}
               </li>
             ))}
           </ul>
-          <p className="mt-1 text-zinc-600">
+          <p className="mt-1 text-zinc-500">
             BNB Chain transfer events — the on-chain record behind Renaiss&rsquo; &ldquo;verifiable on-chain&rdquo; claim.
           </p>
         </details>
@@ -130,7 +131,7 @@ export default function Scanner({ data }: { data: { listings: Listing[]; generat
           <Row key={l.tokenId} l={l} />
         ))}
       </ul>
-      <p className="mt-3 text-[11px] text-zinc-600">
+      <p className="mt-3 text-[11px] text-zinc-500">
         Independent valuations via{" "}
         <a href="https://index.renaissos.com" target="_blank" rel="noreferrer" className="underline hover:text-zinc-400">
           Renaiss OS Index

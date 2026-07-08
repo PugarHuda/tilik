@@ -109,7 +109,9 @@ export default function CertCheck() {
             }}
           />
         </label>
-        <span className="rounded bg-zinc-800 px-1 text-[10px] text-zinc-500">beta</span>
+        <span className="rounded bg-zinc-800 px-1 text-[10px] text-zinc-500" title="Public tier is rate-limited (10/day) and AI-slow; a partner key makes it reliable.">
+          beta
+        </span>
       </div>
 
       {res && (

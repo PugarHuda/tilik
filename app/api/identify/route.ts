@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       headers: key && secret ? { "X-Api-Key": key, "X-Api-Secret": secret } : {},
     });
     if (res.status === 429)
-      return NextResponse.json({ found: false, error: "The index is rate-limited right now (10/day). Try again later." }, { status: 429 });
+      return NextResponse.json({ found: false, error: "Photo identify is rate-limited on the public tier (10/day). The cert lookup above is the reliable path." }, { status: 429 });
     if (res.status === 422)
       return NextResponse.json({ found: false, error: "Couldn't read a graded card from that image — try a clearer, straight-on photo of the slab." }, { status: 200 });
     if (!res.ok) return NextResponse.json({ found: false, error: `Index returned ${res.status}.` }, { status: 502 });
@@ -42,6 +42,9 @@ export async function POST(req: Request) {
     if (!out.found) out.error = "Couldn't identify a graded card in that image.";
     return NextResponse.json(out);
   } catch {
-    return NextResponse.json({ found: false, error: "Could not reach the independent index." }, { status: 502 });
+    return NextResponse.json(
+      { found: false, error: "The photo index (beta) didn't respond in time. Try the cert lookup above, or a partner API key for reliable access." },
+      { status: 502 },
+    );
   }
 }

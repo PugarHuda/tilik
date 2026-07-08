@@ -2,6 +2,9 @@
 
 An independent EV & odds-transparency tool for **Renaiss** gacha card packs.
 
+**Live demo:** https://tilik-hudas-projects-a8e7f558.vercel.app
+**Repo:** https://github.com/PugarHuda/tilik
+
 Renaiss sells "infinite gacha" packs of real graded Pokémon / One Piece cards and
 advertises only the **top prize** — never the expected value or the odds. A collector
 paying $48–$150 per rip is flying blind. Tilik shows the realistic EV, the distribution

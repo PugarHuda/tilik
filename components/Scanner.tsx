@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { listingSignals, type Listing, type Band } from "@/lib/scanner";
+import { Sparkline } from "./Sparkline";
 import { usd, ratio } from "@/lib/format";
 
 const BAND_CLS: Record<Band, string> = {
@@ -60,6 +61,11 @@ function Row({ l }: { l: Listing }) {
           value={l.index ? usd(l.index.estimate) : "—"}
           accent="text-zinc-100"
         />
+        {l.index?.spark && l.index.spark.length > 1 && (
+          <div className="shrink-0 self-center" title="Independent price history">
+            <Sparkline data={l.index.spark} />
+          </div>
+        )}
       </div>
 
       {l.index && (

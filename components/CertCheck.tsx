@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { Sparkline } from "./Sparkline";
 import { usd } from "@/lib/format";
 
 type Result = {
@@ -16,6 +17,7 @@ type Result = {
     lastSaleAt: string | null;
     population: number | null;
     href: string | null;
+    spark?: number[];
   };
 };
 
@@ -151,6 +153,9 @@ export default function CertCheck() {
                   <span className={`text-xs ${res.index.deltaPct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                     {res.index.deltaPct >= 0 ? "▲" : "▼"} {Math.abs(res.index.deltaPct).toFixed(1)}%
                   </span>
+                )}
+                {res.index.spark && res.index.spark.length > 1 && (
+                  <Sparkline data={res.index.spark} className="ml-1" />
                 )}
               </div>
               <div className="mt-1 flex flex-wrap gap-x-3 text-[11px] text-zinc-500">

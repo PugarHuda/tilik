@@ -60,6 +60,10 @@ export default function PackCard({ pack, updatedAt }: { pack: Pack; updatedAt: s
           <span className="font-semibold text-zinc-100">{usd(s.empiricalMean)}</span> —{" "}
           {crossCheck}.
         </p>
+        <p className="mt-1 text-[11px] text-zinc-500">
+          95% confidence interval on that mean: {usd(s.meanCiLow)} – {usd(s.meanCiHigh)} (n = {s.n} —
+          a small sample; the interval is wide because a few high-value pulls swing the average).
+        </p>
       </div>
 
       {/* Stat tiles */}

@@ -11,6 +11,9 @@ export type IndexValuation = {
   href: string | null;
 };
 
+// `to` is absent on mint/sell events (schema differs by type); keep it optional.
+export type Transfer = { txHash: string; to?: string; from?: string; ts: number; type: string };
+
 export type Listing = {
   tokenId: string;
   name: string;
@@ -20,6 +23,8 @@ export type Listing = {
   cert: string;
   ask: number;
   renaissFmv: number;
+  image: string | null;
+  transfers: Transfer[];
   index: IndexValuation | null;
   indexError: string | null;
   renaissHref: string;
@@ -70,6 +75,8 @@ function demo() {
     grade: "9",
     gradingCompany: "PSA",
     cert: "PSA1",
+    image: null,
+    transfers: [],
     indexError: null,
     renaissHref: "",
   };

@@ -7,7 +7,7 @@ const INDEX = "https://api.renaissos.com";
 const mem = new Map<string, unknown>(); // per-lambda cache to spare the rate limit
 
 function fromCache(cert: string) {
-  const l = (scanner.listings as { cert: string; index: unknown; name: string; setName: string; grade: string; gradingCompany: string }[]).find(
+  const l = (scanner.listings as { cert: string; index: unknown; name: string; setName: string; grade: string; gradingCompany: string; image: string | null }[]).find(
     (x) => x.cert.toUpperCase() === cert,
   );
   if (!l || !l.index) return null;
@@ -15,7 +15,7 @@ function fromCache(cert: string) {
     cert,
     found: true,
     cached: true,
-    card: { name: l.name, setName: l.setName, grade: l.grade, gradingCompany: l.gradingCompany, imageUrl: null },
+    card: { name: l.name, setName: l.setName, grade: l.grade, gradingCompany: l.gradingCompany, imageUrl: l.image },
     index: l.index,
   };
 }

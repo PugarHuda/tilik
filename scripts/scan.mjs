@@ -32,6 +32,27 @@ function certOf(item) {
   return s?.value ?? null; // e.g. "PSA82643863"
 }
 
+// Image + on-chain provenance come from the CLI card detail (no Index quota cost).
+function cardExtras(tokenId) {
+  try {
+    const d = cli(`card ${tokenId} --activities --json`);
+    const c = d.collectible ?? {};
+    const acts = d.activities?.activities ?? [];
+    return {
+      image: c.frontImageUrl ?? c.frontWithoutStandImageUrl ?? null,
+      transfers: acts.slice(0, 6).map((a) => ({
+        txHash: a.txHash,
+        to: a.to,
+        from: a.user,
+        ts: Number(a.timestamp),
+        type: a.type,
+      })),
+    };
+  } catch {
+    return { image: null, transfers: [] };
+  }
+}
+
 const key = process.env.RENAISS_API_KEY;
 const secret = process.env.RENAISS_API_SECRET;
 
@@ -62,6 +83,7 @@ const rows = (Object.values(mkt).find((v) => Array.isArray(v)) ?? [])
 const listings = [];
 for (const { it, cert } of rows) {
   const index = await indexValuation(cert);
+  const extras = cardExtras(it.tokenId);
   listings.push({
     tokenId: it.tokenId,
     name: it.name,
@@ -71,6 +93,8 @@ for (const { it, cert } of rows) {
     cert,
     ask: usdt(it.askPriceInUSDT),
     renaissFmv: cents(it.fmvPriceInUSD),
+    image: extras.image,
+    transfers: extras.transfers,
     index: index.error ? null : index,
     indexError: index.error ?? null,
     renaissHref: `https://www.renaiss.xyz/card/${it.tokenId}`,

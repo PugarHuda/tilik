@@ -24,6 +24,8 @@ export type Stats = {
   officialEV: number;
   featuredCardFmv: number;
   empiricalMean: number;
+  meanCiLow: number; // 95% CI for the observed mean (captures small-sample noise)
+  meanCiHigh: number;
   median: number;
   min: number;
   max: number;
@@ -81,6 +83,9 @@ export function packStats(pack: Pack): Stats {
   const fmvs = pack.pulls.map((p) => p.fmv).sort((a, b) => a - b);
   const n = fmvs.length;
   const mean = n ? sum(fmvs) / n : 0;
+  // 95% CI for the mean — the pull sample is small (~30), so show the noise.
+  const variance = n > 1 ? fmvs.reduce((a, v) => a + (v - mean) ** 2, 0) / (n - 1) : 0;
+  const stdErr = n > 0 ? Math.sqrt(variance) / Math.sqrt(n) : 0;
   const evRatioEmpirical = rip ? mean / rip : 0;
   const verdict: Stats["verdict"] =
     evRatioEmpirical >= 1.02 ? "positive" : evRatioEmpirical >= 0.98 ? "roughly-fair" : "negative";
@@ -90,6 +95,8 @@ export function packStats(pack: Pack): Stats {
     officialEV: pack.officialEV,
     featuredCardFmv: pack.featuredCardFmv,
     empiricalMean: mean,
+    meanCiLow: Math.max(0, mean - 1.96 * stdErr),
+    meanCiHigh: mean + 1.96 * stdErr,
     median: median(fmvs),
     min: n ? fmvs[0] : 0,
     max: n ? fmvs[n - 1] : 0,
@@ -181,6 +188,8 @@ function demo() {
   const s = packStats(pack);
   assert(s.n === 4, "n");
   assert(Math.abs(s.empiricalMean - 56.25) < 1e-9, "mean");
+  assert(s.meanCiLow <= s.empiricalMean && s.empiricalMean <= s.meanCiHigh, "CI brackets the mean");
+  assert(s.meanCiLow >= 0, "CI low floored at 0");
   assert(s.median === 10, "median (avg of 8 and 12)");
   assert(Math.abs(s.pProfit - 0.5) < 1e-9, "pProfit 2/4");
   assert(s.verdict === "positive", "verdict");

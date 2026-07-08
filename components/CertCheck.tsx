@@ -85,10 +85,21 @@ export default function CertCheck() {
           {res.found && res.index ? (
             <>
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-sm font-medium text-zinc-100">{res.card?.name}</div>
-                  <div className="text-[11px] text-zinc-500">
-                    {res.card?.setName} · {res.card?.gradingCompany} {res.card?.grade} · {res.cert}
+                <div className="flex min-w-0 items-start gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {res.card?.imageUrl && (
+                    <img
+                      src={res.card.imageUrl}
+                      alt={res.card?.name ?? "card"}
+                      loading="lazy"
+                      className="h-16 w-16 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-zinc-100">{res.card?.name}</div>
+                    <div className="text-[11px] text-zinc-500">
+                      {res.card?.setName} · {res.card?.gradingCompany} {res.card?.grade} · {res.cert}
+                    </div>
                   </div>
                 </div>
                 {res.cached && (

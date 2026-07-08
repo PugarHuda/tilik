@@ -30,8 +30,17 @@ function Row({ l }: { l: Listing }) {
   const trend = l.index?.deltaPct;
   return (
     <li className="rounded-xl bg-zinc-800/30 p-4 ring-1 ring-white/5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+      <div className="flex items-start gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {l.image && (
+          <img
+            src={l.image}
+            alt={l.name}
+            loading="lazy"
+            className="h-16 w-16 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+          />
+        )}
+        <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-medium text-zinc-100">{l.name}</div>
           <div className="text-[11px] text-zinc-500">
             {l.gradingCompany} {l.grade} · {l.cert}
@@ -71,6 +80,36 @@ function Row({ l }: { l: Listing }) {
             </a>
           )}
         </div>
+      )}
+
+      {l.transfers.length > 0 && (
+        <details className="mt-2 text-[11px] text-zinc-500">
+          <summary className="cursor-pointer select-none hover:text-zinc-300">
+            On-chain provenance ({l.transfers.length} transfers) — verify on BscScan
+          </summary>
+          <ul className="mt-1 space-y-0.5">
+            {l.transfers.map((t) => (
+              <li key={t.txHash} className="flex items-center justify-between gap-2 tabular-nums">
+                <a
+                  href={`https://bscscan.com/tx/${t.txHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="truncate font-mono text-zinc-500 hover:text-emerald-300"
+                >
+                  {t.type} · {t.txHash.slice(0, 14)}…
+                </a>
+                {t.to && (
+                  <span className="shrink-0 text-zinc-600">
+                    → {t.to.slice(0, 6)}…{t.to.slice(-4)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-1 text-zinc-600">
+            BNB Chain transfer events — the on-chain record behind Renaiss&rsquo; &ldquo;verifiable on-chain&rdquo; claim.
+          </p>
+        </details>
       )}
     </li>
   );

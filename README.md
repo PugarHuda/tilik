@@ -35,10 +35,15 @@ Every EV number above is built on Renaiss' *own* FMV — a circular source. Tili
 FMV against an **independent, sale-based estimate** from the [Renaiss OS Index](https://index.renaissos.com)
 (`api.renaissos.com/v1/graded/{cert}`): last-sale price, trend, confidence tier, and PSA population.
 
-- **Value scanner** — for live marketplace listings: Ask vs Renaiss FMV vs independent estimate,
-  with a neutral band (above / in line / below). Where FMV runs well above the independent estimate,
-  a pack EV built on it may be optimistic.
-- **Check any graded card** — paste a PSA / CGC / BGS cert for an on-demand independent valuation.
+- **Value scanner** — for live marketplace listings (with card art): Ask vs Renaiss FMV vs
+  independent estimate, with a neutral band (above / in line / below). Where FMV runs well above the
+  independent estimate, a pack EV built on it may be optimistic.
+- **On-chain provenance** — each listing links its real BNB Chain transfer/mint/sell events to
+  BscScan — the record behind Renaiss' "verifiable on-chain" claim.
+- **Check any graded card** — paste a PSA / CGC / BGS cert for an on-demand independent valuation
+  (with the card image).
+- **Confidence interval** — the observed-pull EV carries a 95% CI, so the small-sample noise is
+  visible rather than hidden behind a single number.
 
 Real example found in the data: cert `PSA82643863` — Renaiss FMV **$40.00**, ask **$102.00**,
 independent estimate **$16.62** (last sale 2026-06-17, trending −18.7%).

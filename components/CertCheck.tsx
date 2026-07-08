@@ -21,7 +21,9 @@ type Result = {
   };
 };
 
-const EXAMPLES = ["PSA82643863", "PSA151238633"];
+// Both are in the cached cross-check sample, so they always resolve instantly
+// (no live Index call) — safe to click during a demo even if rate-limited.
+const EXAMPLES = ["PSA82643863", "PSA98784241"];
 
 export default function CertCheck() {
   const [cert, setCert] = useState("");

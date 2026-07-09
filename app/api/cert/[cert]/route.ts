@@ -24,7 +24,7 @@ function fromCache(cert: string) {
 export async function GET(_req: Request, { params }: { params: Promise<{ cert: string }> }) {
   const raw = (await params).cert || "";
   const cert = raw.trim().toUpperCase().replace(/\s+/g, "");
-  if (!/^[A-Z]{2,4}\d{4,}$/.test(cert))
+  if (!/^[A-Z]{2,4}\d{4,15}$/.test(cert))
     return NextResponse.json({ error: "Enter a grading cert like PSA12345678." }, { status: 400 });
 
   if (mem.has(cert)) return NextResponse.json(mem.get(cert));

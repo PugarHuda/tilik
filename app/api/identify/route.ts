@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { normalizeGraded } from "@/lib/graded";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60; // by-image runs AI recognition — can exceed the 10s default
+export const maxDuration = 25;
+const UPSTREAM_TIMEOUT = 20_000; // fail fast with clean JSON instead of a 60s hang → 504
 
 const INDEX = "https://api.renaissos.com";
 const MAX = 15 * 1024 * 1024;
@@ -32,6 +33,7 @@ export async function POST(req: Request) {
       method: "POST",
       body,
       headers: key && secret ? { "X-Api-Key": key, "X-Api-Secret": secret } : {},
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT),
     });
     if (res.status === 429)
       return NextResponse.json({ found: false, error: "Photo identify is rate-limited on the public tier (10/day). The cert lookup above is the reliable path." }, { status: 429 });
@@ -41,10 +43,16 @@ export async function POST(req: Request) {
     const out = normalizeGraded(await res.json());
     if (!out.found) out.error = "Couldn't identify a graded card in that image.";
     return NextResponse.json(out);
-  } catch {
+  } catch (e) {
+    const timedOut = e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError");
     return NextResponse.json(
-      { found: false, error: "The photo index (beta) didn't respond in time. Try the cert lookup above, or a partner API key for reliable access." },
-      { status: 502 },
+      {
+        found: false,
+        error: timedOut
+          ? "Photo ID is slow on the public tier and timed out (beta). Use the cert lookup above — it's instant. A partner API key makes photo ID reliable."
+          : "Couldn't reach the photo index. Use the cert lookup above.",
+      },
+      { status: timedOut ? 200 : 502 },
     );
   }
 }

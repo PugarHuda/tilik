@@ -3,7 +3,7 @@ import { normalizeGraded } from "@/lib/graded";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 25;
-const UPSTREAM_TIMEOUT = 20_000; // fail fast with clean JSON instead of a 60s hang → 504
+const UPSTREAM_TIMEOUT = 12_000; // fail fast with clean JSON instead of a 60s hang → 504
 
 const INDEX = "https://api.renaissos.com";
 const MAX = 15 * 1024 * 1024;

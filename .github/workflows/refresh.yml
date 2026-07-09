@@ -2,8 +2,10 @@ name: Refresh pack snapshot
 # Packs-only refresh (no Index calls) so a rate limit can never overwrite good
 # data with nulls. Refresh the Index cross-check manually via `npm run scan`.
 on:
-  schedule:
-    - cron: "0 6 * * *" # daily 06:00 UTC
+  # Daily schedule paused for the judging window so the demo numbers stay stable
+  # and match the recorded video / docs. Re-enable after judging.
+  # schedule:
+  #   - cron: "0 6 * * *" # daily 06:00 UTC
   workflow_dispatch:
 
 permissions:

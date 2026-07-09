@@ -17,17 +17,17 @@ cross-check *before* you rip. 🧵
 **2/ (the core)**
 For each pack, Tilik checks Renaiss' *own* stated EV against the last 30 real pulls.
 
-OMEGA: stated $51.84 → observed mean $48.83. Consistent ✅
+OMEGA: stated $51.84 → observed mean $60.57 — running a bit above their figure.
 
 And it shows the 95% confidence interval, because it's a small sample and I won't hide the noise.
 
 **3/ (honesty)**
 It's honest about skew, too.
 
-Eden's *average* pull beats the rip — but 80% of pulls still lose. So it's not a green "+EV."
-It's labeled **"+EV but top-heavy."**
+All 3 packs are "top-heavy": the average beats the rip, but most single pulls still lose. Eden's
+mean is $200+ — yet 63% of pulls land under the $150 rip.
 
-The average alone flatters the odds. A good tool says so.
+Not a green "+EV." It's **"+EV but top-heavy."** The average alone flatters the odds.
 
 **4/ (the wedge)**
 Here's the part Renaiss can't credibly ship itself: every FMV is Renaiss valuing Renaiss.

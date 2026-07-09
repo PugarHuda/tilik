@@ -22,7 +22,8 @@ assumptions and lets you decide.
 ## What it shows (per pack: OMEGA, RenaCrypt, Eden)
 
 - **Fairness cross-check** — Renaiss' stated EV vs. the realized mean of the last 30 real pulls.
-- **Verdict badge** — leans +EV / roughly fair / leans −EV (based on observed mean ÷ rip).
+- **Verdict badge** — leans +EV / +EV-but-top-heavy / roughly fair / leans −EV (observed mean vs rip,
+  factoring in P(profit)).
 - **Value distribution** — histogram of the last 30 pulls binned by multiple of the rip price
   (loss / profit / chase).
 - **P(pull > rip)** and **median** alongside the mean — because gacha value is skewed, the

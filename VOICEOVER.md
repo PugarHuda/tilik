@@ -12,15 +12,16 @@ that.
 ¶
 
 For every pack, Tilik cross-checks Renaiss' own stated expected value against the last thirty real
-pulls. OMEGA — they state fifty-one eighty-four; the observed mean was forty-eight eighty-three.
-Consistent. And we show the ninety-five percent confidence interval too, because it's a small
+pulls. OMEGA — they state fifty-one eighty-four; the observed mean, right here, actually came in a
+little above that. And we show the ninety-five percent confidence interval too, because it's a small
 sample, and we won't hide the noise.
 
 ¶
 
-We're honest about skew, as well. Eden's average pull beats the rip price — but eighty percent of
-pulls still lose. So it isn't a green "plus-EV." It's labeled "plus-EV, but top-heavy." The average
-alone flatters the odds.
+And we're honest about the skew. All three packs are top-heavy: the average beats the rip, but most
+single pulls still lose. Eden's mean is over two hundred dollars — yet most pulls come in under the
+hundred-and-fifty-dollar rip. So it isn't a green "plus-EV." It's labeled "plus-EV, but top-heavy."
+The average alone flatters the odds.
 
 ¶
 

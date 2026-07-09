@@ -15,16 +15,19 @@ Record at 1280×720, dark theme, one browser tab. Times are cumulative.
 
 ### 0:12 – 0:35 · Fairness cross-check (the core)
 > "For every pack, Tilik cross-checks Renaiss' *own* stated expected value against the last 30 real
-> pulls. OMEGA: they state $51.84; the observed mean was $48.83 — consistent. We show the 95%
-> confidence interval too, because it's a small sample and we won't hide the noise."
+> pulls. OMEGA: they state $51.84; the observed mean was $60.57 — actually running a bit above their
+> figure. And we show the 95% confidence interval, because it's a small sample and we won't hide the
+> noise."
 
-**On screen:** OMEGA card — point to the cross-check line, the CI, the value histogram, P(profit).
+**On screen:** OMEGA card — point to the cross-check line, the (wide) CI, the value histogram, P(profit).
 
 ### 0:35 – 0:52 · Honest verdicts
-> "And we're honest about skew. Eden's *average* pull beats the rip — but 80% of pulls still lose.
-> So it's not a green '+EV'. It's labeled '+EV but top-heavy.' The average alone flatters the odds."
+> "And we're honest about the skew. Every one of these three packs is *top-heavy*: the average beats
+> the rip, but most single pulls still lose. Eden's mean is over two hundred dollars — yet 63% of
+> pulls come in under the $150 rip. So it's not a green '+EV'. It's labeled '+EV but top-heavy.'
+> The average alone flatters the odds."
 
-**On screen:** scroll to Eden, point to the amber "+EV but top-heavy" badge and the P(profit)/median.
+**On screen:** scroll to Eden, point to the amber "+EV but top-heavy" badge, the median ($71) vs rip, and P(profit).
 
 ### 0:52 – 1:15 · Independent cross-check (the wedge)
 > "Here's the part Renaiss can't credibly build themselves. Every FMV above is Renaiss valuing

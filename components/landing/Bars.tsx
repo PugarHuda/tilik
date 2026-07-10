@@ -2,7 +2,7 @@ import type { Stats } from "@/lib/ev";
 import { usd, pct } from "@/lib/format";
 
 const BIN_COLOR = { loss: "#e23d53", profit: "#16a34a", chase: "#e9a50b" } as const;
-const TIER_COLOR: Record<string, string> = { A: "#e9a50b", B: "#f25fa8", C: "#6c3bf4" };
+const TIER_COLOR: Record<string, string> = { S: "#e9a50b", A: "#e9a50b", B: "#f25fa8", C: "#6c3bf4", D: "#6c3bf4" };
 
 export function Histogram({ stats }: { stats: Stats }) {
   const max = Math.max(...stats.histogram.map((b) => b.count), 1);
@@ -10,13 +10,12 @@ export function Histogram({ stats }: { stats: Stats }) {
     <div>
       <div className="flex h-32 items-end gap-1.5" role="img" aria-label={`Value distribution of ${stats.n} pulls`}>
         {stats.histogram.map((b) => (
-          <div key={b.label} className="flex flex-1 flex-col items-center justify-end gap-1">
-            <div
-              className="w-full rounded-t-md transition-[height] duration-500"
-              style={{ height: `${8 + (b.count / max) * 92}%`, background: BIN_COLOR[b.kind] }}
-              title={`${b.label}: ${b.count}`}
-            />
-          </div>
+          <div
+            key={b.label}
+            className="flex-1 rounded-t-md transition-[height] duration-500"
+            style={{ height: `${8 + (b.count / max) * 92}%`, background: BIN_COLOR[b.kind] }}
+            title={`${b.label}: ${b.count}`}
+          />
         ))}
       </div>
       <div className="mt-1.5 flex gap-1.5">

@@ -276,9 +276,9 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
       {/* cached listing cross-check */}
-      <div className="rounded-3xl border border-line bg-white p-7 shadow-[0_20px_46px_rgba(30,20,70,.06)]">
+      <div className="min-w-0 rounded-3xl border border-line bg-white p-7 shadow-[0_20px_46px_rgba(30,20,70,.06)]">
         <div className="mb-4 flex flex-wrap gap-2">
           {listings.map((l) => (
             <button key={l.cert} onClick={() => setCert(l.cert)} className={`rounded-full border px-3 py-1.5 font-display text-[12.5px] font-semibold transition ${cert === l.cert ? "border-violet bg-violet text-white" : "border-line2 bg-white text-violet hover:border-violet"}`}>

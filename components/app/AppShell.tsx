@@ -64,6 +64,7 @@ export default function AppShell({ packs, listings, cards }: { packs: Pack[]; li
   const packIdx = packs.findIndex((p) => p.slug === packSlug);
   const s = useMemo(() => packStats(pack), [pack]);
   const v = VERDICT[s.verdict];
+  const allStats = useMemo(() => packs.map((p) => ({ p, st: packStats(p) })), [packs]);
   const mc = useMemo(() => monte(pack, ripN, packIdx), [pack, ripN, packIdx]);
   const listing = listings.find((l) => l.cert === cert) ?? listings[0];
   const chase = cards.length ? cards[packIdx % cards.length] : null;
@@ -162,6 +163,56 @@ export default function AppShell({ packs, listings, cards }: { packs: Pack[]; li
                   <div className="mt-6 text-sm font-semibold">Observed odds by tier</div>
                   <div className="mt-3"><TierOdds stats={s} /></div>
                 </div>
+              </div>
+
+              {/* Compare all packs */}
+              <div className="mt-5 rounded-3xl border border-line bg-white p-6 shadow-[0_20px_46px_rgba(30,20,70,.06)]">
+                <div className="text-sm font-semibold">
+                  Compare all packs <span className="text-muted">— which is worth ripping?</span>
+                </div>
+                <div className="mt-3 overflow-x-auto">
+                  <table className="w-full min-w-[540px] text-sm">
+                    <thead>
+                      <tr className="text-left text-[11px] uppercase tracking-wide text-muted">
+                        <th className="pb-2 font-medium">Pack</th>
+                        <th className="pb-2 text-right font-medium">Rip</th>
+                        <th className="pb-2 text-right font-medium">Observed EV</th>
+                        <th className="pb-2 pl-4 font-medium">Verdict</th>
+                        <th className="pb-2 text-right font-medium">P(profit)</th>
+                        <th className="pb-2 text-right font-medium">Median</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allStats.map(({ p, st }) => {
+                        const vv = VERDICT[st.verdict];
+                        const active = p.slug === packSlug;
+                        return (
+                          <tr
+                            key={p.slug}
+                            onClick={() => setPackSlug(p.slug)}
+                            className={`cursor-pointer border-t border-line transition ${active ? "bg-soft" : "hover:bg-soft"}`}
+                          >
+                            <td className="py-2.5 font-display font-semibold">{p.name}</td>
+                            <td className="py-2.5 text-right tabular-nums">{usd0(p.ripPrice)}</td>
+                            <td className="py-2.5 text-right tabular-nums">
+                              {usd(st.empiricalMean)} <span className="text-muted">{st.evRatioEmpirical.toFixed(2)}×</span>
+                            </td>
+                            <td className="py-2.5 pl-4">
+                              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold" style={{ background: vv.bg, color: vv.color }}>
+                                {vv.label}
+                              </span>
+                            </td>
+                            <td className="py-2.5 text-right tabular-nums">{Math.round(st.pProfit * 100)}%</td>
+                            <td className="py-2.5 text-right tabular-nums">{usd0(st.median)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="mt-2 text-[11px] text-muted">
+                  Click a row to load it above. All three are top-heavy or lean +EV — but P(profit) &lt; 50% means most single rips still lose. Estimates from the last 30 pulls.
+                </p>
               </div>
             </>
           )}

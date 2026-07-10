@@ -82,12 +82,18 @@ bootstrapped from the observed pulls.
 scripts/fetch.mjs        → snapshot packs from the CLI into data/packs.json
 scripts/scan.mjs         → enrich marketplace listings with Index valuations → data/scanner.json
 data/*.json              → committed snapshots; the site never calls the CLI at build time
-lib/ev.ts                → pure EV/odds + Monte Carlo engine + self-check
+lib/ev.ts                → pure EV/odds + seeded Monte Carlo engine + self-check
 lib/scanner.ts           → pure cross-check (band) logic + self-check
-app/api/cert/[cert]      → serverless proxy to the Index API (cache-first, rate-limit aware)
-app/ + components/       → Next.js (App Router) dashboard, Recharts
+lib/graded.ts            → shared normalizer for cert-lookup + by-image results
+app/page.tsx             → marketing landing (/)
+app/app/                 → app dashboard: ink sidebar + 4 hash-routed views (/app)
+app/packs/[slug]/        → pack detail (SSG) · app/cards/[cert]/ → card detail (SSG)
+app/api/cert/[cert]      → Index cert proxy (cache-first, rate-limit aware)
+app/api/identify         → by-image proxy (parses the Index SSE stream)
+components/              → Logo, verdict, DetailChrome, landing/Bars (CSS charts), app/AppShell
 ```
 
+Design: Space Grotesk + Instrument Sans, violet/pink brand, tokens in `globals.css @theme`.
 No database, no cron, no indexer — total data is ~90 pulls + a curated cross-check sample.
 
 ## Run it

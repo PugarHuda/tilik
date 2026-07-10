@@ -1,45 +1,40 @@
 # Tilik — voiceover script (read straight through)
 
-Just the words, in order. ~300 words ≈ 1:55 at a natural pace. Stage directions live in DEMO.md.
-Pause a beat at each ¶ break. Warm, calm, confident — you're helping, not selling.
+Just the words, in order. ~290 words ≈ 1:55 at a natural pace. Stage directions live in DEMO.md.
+Warm, calm, confident — you're helping, not selling.
 
 ---
 
 Renaiss gacha packs show you one number — the top prize. Never the expected value. Never the odds.
-If you're paying forty-eight to a hundred and fifty dollars a rip, you're flying blind. Tilik fixes
-that.
+Tilik shows the realistic expected value, and an honest verdict, before you rip.
 
 ¶
 
 For every pack, Tilik cross-checks Renaiss' own stated expected value against the last thirty real
-pulls. OMEGA — they state fifty-one eighty-four; the observed mean, right here, actually came in a
-little above that. And we show the ninety-five percent confidence interval too, because it's a small
-sample, and we won't hide the noise.
+pulls — and shows the ninety-five percent confidence interval, because it's a small sample and we
+won't hide the noise.
 
 ¶
 
-And we're honest about the skew. All three packs are top-heavy: the average beats the rip, but most
-single pulls still lose. Eden's mean is over two hundred dollars — yet most pulls come in under the
-hundred-and-fifty-dollar rip. So it isn't a green "plus-EV." It's labeled "plus-EV, but top-heavy."
-The average alone flatters the odds.
+And it's honest about the skew. OMEGA and Eden are "top-heavy" — the average beats the rip, but most
+single pulls still lose. RenaCrypt leans genuinely positive. The verdict factors in your chance of
+profit, not just the average — because the average alone flatters the odds.
 
 ¶
 
-Now here's the part Renaiss can't credibly build for itself. Every fair-market value so far is
-Renaiss valuing Renaiss. So we check it against an independent, sale-based estimate from the Renaiss
-OS Index. This card: Renaiss says forty dollars; the independent estimate is sixteen. We just flag
-it — you decide.
+Now the credibility layer. Every fair-market value so far is Renaiss valuing Renaiss. So we check it
+against an independent, sale-based estimate from the Renaiss OS Index. Paste any grading cert — or
+just snap a photo of the slab, and it reads the card and prices it.
 
 ¶
 
-And it's all verifiable. Each card links its real BNB Chain transfers to BscScan — that's what
-"verifiable on-chain" actually looks like. You can paste any grading cert, or even a photo of the
-slab, for an independent valuation on the spot.
+And it's all verifiable. Each card's real BNB Chain events — mint, transfer, sell — link straight to
+BscScan. That's what "verifiable on-chain" actually looks like.
 
 ¶
 
-Finally — should you rip? Monte Carlo, five thousand runs. Rip OMEGA ten times, and here's your
-expected profit and loss, your chance of coming out ahead, and the full spread of outcomes.
+Finally — should you rip? Monte Carlo. Rip a pack a few times, and here's your chance of finishing up,
+your expected profit and loss, and the full spread of outcomes around break-even.
 
 ¶
 

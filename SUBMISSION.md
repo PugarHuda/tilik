@@ -47,8 +47,9 @@ seconds — **before** they rip:
   resolved). The independent cross-check therefore runs on **marketplace listings**, and speaks to
   Renaiss' FMV methodology generally — not to one specific pack.
 - **Index public tier is rate-limited** (10/day/IP). Cross-check data is a curated, cached sample; the
-  cert examples always resolve from cache. Photo-identify (`by-image`) is beta and AI-slow — reliable
-  only with a partner key (`RENAISS_API_KEY` / `RENAISS_API_SECRET`, already wired).
+  cert chips/examples always resolve from cache. Photo-identify (`by-image`) streams progress over SSE
+  and returns a valuation in ~10–15s (verified working); it counts against the same 10/day public tier,
+  and a partner key (`RENAISS_API_KEY` / `RENAISS_API_SECRET`, already wired) lifts the limit.
 - All data is beta and may be incomplete, delayed, or updated. **Estimates, not verified market facts.
   Not financial advice.**
 
@@ -58,10 +59,17 @@ its RTP, it builds trust and retention. Tilik never calls a pack a "scam"; it su
 their assumptions and lets the collector decide. It gives Renaiss the third-party credibility a
 first-party calculator never could.
 
+## Product surface
+- **Landing** (`/`) — marketing: hero, blind-vs-Tilik, pack dashboard, scanner, how-it-works, FAQ, limitations.
+- **App** (`/app`) — ink-sidebar dashboard, four hash-routed views: Packs, Scanner (+ photo identify),
+  Simulator (Monte Carlo), On-chain.
+- **Pack detail** (`/packs/[slug]`) and **Card detail** (`/cards/[cert]`) — SSG deep-dives.
+
 ## Tech
-Next.js (App Router) · TypeScript · Tailwind · Recharts · deployed on Vercel. Pure, self-checked EV &
-cross-check engines (`npm run check`). No database, no cron beyond a rate-limit-safe daily snapshot
-Action — total data is ~90 pulls plus a curated cross-check sample.
+Next.js (App Router) · TypeScript · Tailwind (design tokens in `@theme`) · Space Grotesk + Instrument
+Sans · deployed on Vercel. Pure, self-checked EV & cross-check engines with a deterministic seeded Monte
+Carlo (`npm run check`). No database, no cron beyond a rate-limit-safe daily snapshot Action — total data
+is ~90 pulls plus a curated cross-check sample.
 
 ---
 

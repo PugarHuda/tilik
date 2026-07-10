@@ -85,7 +85,7 @@ export default function AppShell({ packs, listings }: { packs: Pack[]; listings:
                 style={active ? { background: "rgba(108,59,244,.22)" } : undefined}
               >
                 <span
-                  className="flex h-6.5 w-6.5 items-center justify-center rounded-lg text-sm"
+                  className="flex items-center justify-center rounded-lg text-sm"
                   style={active ? { background: "linear-gradient(140deg,#6c3bf4,#f25fa8)", color: "#fff", width: 26, height: 26 } : { background: "rgba(255,255,255,.08)", color: "#c9b6ff", width: 26, height: 26 }}
                 >
                   {META[k].icon}
@@ -287,7 +287,7 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
           ))}
         </div>
         <div className="flex items-start gap-4">
-          {listing.image && <Image src={listing.image} alt={listing.name} width={72} height={72} className="h-18 w-18 shrink-0 rounded-xl object-cover ring-1 ring-line" />}
+          {listing.image && <Image src={listing.image} alt={listing.name} width={72} height={72} className="h-[72px] w-[72px] shrink-0 rounded-xl object-cover ring-1 ring-line" />}
           <div className="min-w-0">
             <div className="truncate font-display text-base font-semibold">{listing.name}</div>
             <div className="text-xs text-muted">{listing.gradingCompany} {listing.grade} · {listing.cert}</div>

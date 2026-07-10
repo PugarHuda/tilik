@@ -40,10 +40,10 @@ export type Signals = {
   askListed: boolean; // false when ask is a placeholder (not genuinely for sale)
 };
 
-// >25% over = above, >10% under = below, otherwise in line with the independent estimate.
+// >10% over = above, >10% under = below, otherwise in line with the independent estimate.
 export function band(ratio: number | null): Band {
   if (ratio == null) return "unknown";
-  return ratio >= 1.25 ? "above" : ratio <= 0.9 ? "below" : "in-line";
+  return ratio > 1.1 ? "above" : ratio < 0.9 ? "below" : "in-line";
 }
 
 export function listingSignals(l: Listing): Signals {
@@ -88,7 +88,7 @@ function demo() {
   });
 
   assert(listingSignals(mk(100, 40, 50)).askBand === "above", "2× estimate => above");
-  assert(listingSignals(mk(45, 40, 50)).askBand === "below", "0.9× estimate => below");
+  assert(listingSignals(mk(44, 40, 50)).askBand === "below", "0.88× estimate => below");
   assert(listingSignals(mk(55, 40, 50)).askBand === "in-line", "1.1× estimate => in-line");
   assert(listingSignals(mk(100, 40, null)).askBand === "unknown", "no index => unknown");
   const s = listingSignals(mk(100, 80, 40));

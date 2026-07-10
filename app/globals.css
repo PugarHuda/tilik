@@ -1,11 +1,134 @@
 @import "tailwindcss";
 
+@theme {
+  --color-violet: #6c3bf4;
+  --color-violet-deep: #3d1596;
+  --color-violet-mid: #4a1fb8;
+  --color-violet-tint: #7b48ff;
+  --color-pink: #f25fa8;
+  --color-pink-deep: #a01f7a;
+  --color-gold: #f7c948;
+  --color-gold-text: #e9a50b;
+  --color-ink: #12101a;
+  --color-profit: #16a34a;
+  --color-profit-light: #7ee0a0;
+  --color-loss: #e23d53;
+  --color-bodytext: #5b5470;
+  --color-muted: #8a83a0;
+  --color-muted2: #9a93ac;
+  --color-faint: #b7afd0;
+  --color-faint-violet: #c9b6ff;
+  --color-app: #f5f3fa;
+  --color-soft: #faf9fd;
+  --color-navpill: #f4f2f8;
+  --color-line: #eee9f6;
+  --color-line2: #e9e4f2;
+
+  --font-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-body), "Instrument Sans", system-ui, sans-serif;
+}
+
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: #09090b;
-  color: #e4e4e7;
-  font-feature-settings: "tnum" 1; /* tabular numerals for aligned money */
+  background: #ffffff;
+  color: #12101a;
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* brand gradients */
+.bg-grad-primary {
+  background: linear-gradient(140deg, #6c3bf4, #f25fa8);
+}
+.bg-grad-panel {
+  background: linear-gradient(160deg, #6c3bf4, #3d1596);
+}
+.bg-grad-pink {
+  background: linear-gradient(150deg, #f25fa8, #a01f7a);
+}
+.holo {
+  background: conic-gradient(from 0deg, #f7c948, #f25fa8, #7b48ff, #54c6ff, #f7c948);
+}
+
+/* ambient motion (respect reduced-motion) */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(-7px);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+.floaty {
+  animation: floaty 7s ease-in-out infinite;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: shimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .floaty,
+  .shimmer::after {
+    animation: none;
+  }
+}
+
+/* range slider thumb (violet) */
+input[type="range"].tilik-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+input[type="range"].tilik-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #6c3bf4;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(108, 59, 244, 0.5);
+  cursor: pointer;
+}
+input[type="range"].tilik-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #6c3bf4;
+  border: 4px solid #fff;
+  cursor: pointer;
 }

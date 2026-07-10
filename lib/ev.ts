@@ -64,12 +64,12 @@ function tierBreakdown(pulls: Pull[]): TierRow[] {
 
 // Value bins relative to rip price: floor/loss at the left, chase at the right.
 const BINS: { label: string; lo: number; hi: number; kind: Bin["kind"] }[] = [
-  { label: "<0.5×", lo: 0, hi: 0.5, kind: "loss" },
+  { label: "<0.25×", lo: 0, hi: 0.25, kind: "loss" },
+  { label: "0.25–0.5×", lo: 0.25, hi: 0.5, kind: "loss" },
   { label: "0.5–1×", lo: 0.5, hi: 1, kind: "loss" },
   { label: "1–2×", lo: 1, hi: 2, kind: "profit" },
   { label: "2–5×", lo: 2, hi: 5, kind: "chase" },
-  { label: "5–20×", lo: 5, hi: 20, kind: "chase" },
-  { label: "20×+", lo: 20, hi: Infinity, kind: "chase" },
+  { label: "5×+", lo: 5, hi: Infinity, kind: "chase" },
 ];
 
 function histogram(fmvs: number[], rip: number): Bin[] {
@@ -91,11 +91,11 @@ export function packStats(pack: Pack): Stats {
   const evRatioEmpirical = rip ? mean / rip : 0;
   const pProfit = n ? fmvs.filter((v) => v > rip).length / n : 0;
   const verdict: Stats["verdict"] =
-    evRatioEmpirical >= 1.02
-      ? pProfit >= 0.5
+    evRatioEmpirical >= 1.05
+      ? pProfit >= 0.45
         ? "positive" // +EV and most single pulls profit
         : "top-heavy" // +EV on average, but most pulls lose — chase-driven
-      : evRatioEmpirical >= 0.98
+      : evRatioEmpirical >= 0.95
         ? "roughly-fair"
         : "negative";
   return {
@@ -160,8 +160,9 @@ export function simulate(
   };
 }
 
-// --- self-check ---
-function mulberry32(seed: number): () => number {
+// Seeded PRNG — used to make the Monte Carlo deterministic (stable across
+// re-renders and identical on server + client, so no hydration jitter).
+export function mulberry32(seed: number): () => number {
   let a = seed;
   return () => {
     a |= 0;
@@ -209,8 +210,8 @@ function demo() {
   assert(th.empiricalMean / 15 >= 1.02 && th.pProfit < 0.5, "setup: +EV mean, minority profit");
   assert(th.verdict === "top-heavy", "verdict is top-heavy, not positive");
   assert(sum(s.histogram.map((b) => b.count)) === 4, "histogram covers all pulls");
-  // the $200 pull is 20× rip → lands in the 20×+ chase bin
-  assert(s.histogram.find((b) => b.label === "20×+")!.count === 1, "chase bin");
+  // the $200 pull is 20× rip → lands in the 5×+ chase bin
+  assert(s.histogram.find((b) => b.label === "5×+")!.count === 1, "chase bin");
 
   // simulate: if every card is worth exactly the rip, P&L is always 0.
   const flat = simulate([10, 10, 10], 10, 5, 200, () => 0.5);

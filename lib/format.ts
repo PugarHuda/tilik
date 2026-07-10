@@ -1,6 +1,9 @@
 export const usd = (n: number) =>
   "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// whole-dollar (no cents) — matches the design's fmt0 for large figures
+export const usd0 = (n: number) => "$" + Math.round(n).toLocaleString("en-US");
+
 export const pct = (n: number) => (n * 100).toFixed(0) + "%";
 
 export const ratio = (n: number) => n.toFixed(2) + "×";

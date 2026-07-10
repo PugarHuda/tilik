@@ -14,8 +14,10 @@
   --color-profit-light: #7ee0a0;
   --color-loss: #e23d53;
   --color-bodytext: #5b5470;
-  --color-muted: #8a83a0;
-  --color-muted2: #9a93ac;
+  /* muted tokens darkened from the handoff's #8a83a0/#9a93ac to clear WCAG AA
+     (4.5:1 on white) for small caption text. */
+  --color-muted: #6b6580;
+  --color-muted2: #726b87;
   --color-faint: #b7afd0;
   --color-faint-violet: #c9b6ff;
   --color-app: #f5f3fa;

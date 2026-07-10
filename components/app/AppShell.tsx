@@ -251,6 +251,7 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
   const [query, setQuery] = useState("");
   const [res, setRes] = useState<CertResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
   const sig = listingSignals(listing);
   const max = Math.max(listing.ask, listing.renaissFmv, listing.index?.estimate ?? 0);
   const bs = bandStyle(sig.fmvBand);
@@ -273,15 +274,41 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
   async function identify(f: File) {
     setLoading(true);
     setRes(null);
+    setProgress("Uploading photo…");
     try {
       const fd = new FormData();
       fd.append("file", f);
       const r = await fetch("/api/identify", { method: "POST", body: fd });
-      setRes(await r.json());
+      const ct = r.headers.get("content-type") || "";
+      if (!ct.includes("text/event-stream") || !r.body) {
+        setRes(await r.json());
+        return;
+      }
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf("\n\n")) >= 0) {
+          const block = buf.slice(0, i);
+          buf = buf.slice(i + 2);
+          const m = block.match(/data:\s*([\s\S]+)/);
+          if (!m) continue;
+          try {
+            const d = JSON.parse(m[1]);
+            if (d.stage === "progress") setProgress(d.message);
+            else if (d.stage === "done") setRes(d.result);
+          } catch {}
+        }
+      }
     } catch {
       setRes({ found: false, error: "Upload failed." });
     } finally {
       setLoading(false);
+      setProgress("");
     }
   }
 
@@ -331,6 +358,12 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
           <span className="rounded bg-line px-1 text-[10px] text-muted">beta</span>
           <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) identify(f); e.target.value = ""; }} />
         </label>
+        {loading && progress && (
+          <div className="mt-3 flex items-center gap-2 text-[12px] text-violet">
+            <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-violet border-t-transparent" />
+            {progress}
+          </div>
+        )}
         {res && (
           <div className="mt-4 rounded-2xl border border-line bg-white p-4">
             {res.found && res.index ? (

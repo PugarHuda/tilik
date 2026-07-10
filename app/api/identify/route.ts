@@ -9,27 +9,6 @@ const INDEX = "https://api.renaissos.com";
 const MAX = 15 * 1024 * 1024;
 const OK = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
-// The endpoint is Server-Sent Events: `event: <name>\ndata: <json>` blocks, ending
-// with `event: result`. Pull the result event's JSON out of the buffered stream.
-function parseResultEvent(sse: string): unknown | null {
-  const lines = sse.split("\n");
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].trimStart().startsWith("event: result")) {
-      for (let j = i + 1; j < lines.length && j < i + 4; j++) {
-        const line = lines[j].trimStart();
-        if (line.startsWith("data:")) {
-          try {
-            return JSON.parse(line.slice(5).trim());
-          } catch {
-            return null;
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
-
 export async function POST(req: Request) {
   let file: FormDataEntryValue | null;
   try {
@@ -60,14 +39,57 @@ export async function POST(req: Request) {
     if (res.status === 422)
       return NextResponse.json({ found: false, error: "Couldn't read a graded card from that image — try a clearer, straight-on photo of the slab." }, { status: 200 });
     if (!res.ok) return NextResponse.json({ found: false, error: `Index returned ${res.status}.` }, { status: 502 });
+    if (!res.body) return NextResponse.json({ found: false, error: "No response stream." }, { status: 502 });
 
-    const sse = await res.text();
-    const result = parseResultEvent(sse);
-    if (!result)
-      return NextResponse.json({ found: false, error: "Couldn't identify a graded card in that image — try a clearer, straight-on photo of the slab." }, { status: 200 });
-    const out = normalizeGraded(result);
-    if (!out.found) out.error = "Couldn't identify a graded card in that image.";
-    return NextResponse.json(out);
+    // Re-emit the upstream SSE as our own stream: forward progress messages,
+    // and turn the final `result` event into a normalized `done` event.
+    const upstream = res.body;
+    const stream = new ReadableStream({
+      async start(controller) {
+        const enc = new TextEncoder();
+        const send = (o: unknown) => controller.enqueue(enc.encode(`data: ${JSON.stringify(o)}\n\n`));
+        const reader = upstream.getReader();
+        const dec = new TextDecoder();
+        let buf = "";
+        let gotResult = false;
+        try {
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += dec.decode(value, { stream: true });
+            let i;
+            while ((i = buf.indexOf("\n\n")) >= 0) {
+              const block = buf.slice(0, i);
+              buf = buf.slice(i + 2);
+              const ev = block.match(/event:\s*(\w+)/)?.[1];
+              const data = block.match(/data:\s*([\s\S]+)/)?.[1];
+              if (!ev || !data) continue;
+              if (ev === "progress") {
+                try {
+                  const d = JSON.parse(data);
+                  if (d.message) send({ stage: "progress", message: d.message });
+                } catch {}
+              } else if (ev === "result") {
+                gotResult = true;
+                try {
+                  const out = normalizeGraded(JSON.parse(data));
+                  if (!out.found) out.error = "Couldn't identify a graded card in that image.";
+                  send({ stage: "done", result: out });
+                } catch {
+                  send({ stage: "done", result: { found: false, error: "Couldn't parse the result." } });
+                }
+              }
+            }
+          }
+          if (!gotResult) send({ stage: "done", result: { found: false, error: "Couldn't identify a graded card — try a clearer, straight-on photo of the slab." } });
+        } catch {
+          send({ stage: "done", result: { found: false, error: "Photo ID took too long (beta). Use the cert lookup above." } });
+        } finally {
+          controller.close();
+        }
+      },
+    });
+    return new Response(stream, { headers: { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache, no-transform" } });
   } catch (e) {
     const timedOut = e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError");
     return NextResponse.json(

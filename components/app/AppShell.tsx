@@ -260,6 +260,21 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
     }
   }
 
+  async function identify(f: File) {
+    setLoading(true);
+    setRes(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", f);
+      const r = await fetch("/api/identify", { method: "POST", body: fd });
+      setRes(await r.json());
+    } catch {
+      setRes({ found: false, error: "Upload failed." });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
       {/* cached listing cross-check */}
@@ -301,6 +316,11 @@ function ScannerView({ listings, cert, setCert, listing }: { listings: Listing[]
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="e.g. PSA82643863" aria-label="Grading cert" className="min-w-0 flex-1 rounded-lg border border-line2 bg-white px-3 py-2 text-sm outline-none focus:border-violet" />
           <button type="submit" disabled={loading} className="rounded-lg bg-violet px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{loading ? "…" : "Look up"}</button>
         </form>
+        <label className="mt-2 inline-flex cursor-pointer items-center gap-1.5 text-[12px] font-medium text-violet hover:underline">
+          <span>📸 identify from a photo of the slab</span>
+          <span className="rounded bg-line px-1 text-[10px] text-muted">beta</span>
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) identify(f); e.target.value = ""; }} />
+        </label>
         {res && (
           <div className="mt-4 rounded-2xl border border-line bg-white p-4">
             {res.found && res.index ? (

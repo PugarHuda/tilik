@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-07-10T15:54:55.734Z",
+  "source": "Renaiss CLI marketplace (real listed Pokémon cards)",
+  "cards": [
+    {
+      "tokenId": "85605463723870720314327557119231703410029182075825255448855751705944967604140",
+      "name": "PSA 10 Gem Mint 2021 Pokemon Sword & Shield Fusion Strike #271 Gengar Vmax",
+      "pokemon": "Gengar Vmax",
+      "set": "Pokemon Sword & Shield Fusion Strike",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 2504.25,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA112732317/nft_image_standalone_diamond.png"
+    },
+    {
+      "tokenId": "93590260927867236827177606824992012223206200865404424287563030473522080256529",
+      "name": "PSA 10 Gem Mint 2019 Pokemon Sun & Moon Unified Minds #242 Mewtwo & Mew Gx",
+      "pokemon": "Mewtwo & Mew Gx",
+      "set": "Pokemon Sun & Moon Unified Minds",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 970,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA108514281/nft_image_standalone_golden.png"
+    },
+    {
+      "tokenId": "25539745743885040009270557970617373563578993660999542277691278894776338820890",
+      "name": "PSA 10 Gem Mint 2024 Pokemon Japanese Sv8a-Terastal Fest Ex #217 Umbreon Ex",
+      "pokemon": "Umbreon Ex",
+      "set": "Pokemon Japanese Sv8a-Terastal Fest Ex",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 561,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA161025105/nft_image_standalone_golden.png"
+    },
+    {
+      "tokenId": "97889483425184034577892620702722354035276546848383681447916690031829631018227",
+      "name": "PSA 10 Gem Mint 2018 Pokemon Japanese Sun & Moon Dragon Storm #059 Zinnia",
+      "pokemon": "Zinnia",
+      "set": "Pokemon Japanese Sun & Moon Dragon Storm",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 510.45,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA75868807/nft_image_standalone_golden.png"
+    },
+    {
+      "tokenId": "32180140203704927390482310237637361713451610355725219013282256538696355418985",
+      "name": "PSA 10 Gem Mint 2021 Pokemon Japanese Sword & Shield Vmax Climax #280 Mew Vmax",
+      "pokemon": "Mew Vmax",
+      "set": "Pokemon Japanese Sword & Shield Vmax Climax",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 429.65,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA119502964/nft_image_standalone_silver.png"
+    },
+    {
+      "tokenId": "102021292639438156072547585866837724334139044903661367281672551759734107307611",
+      "name": "PSA 10 Gem Mint 2025 Pokemon Japanese Sv10-Glory Of Team Rocket #130 Rocket's Mewtwo Ex",
+      "pokemon": "Rocket's Mewtwo Ex",
+      "set": "Pokemon Japanese Sv10-Glory Of Team Rocket",
+      "grade": "10 Gem Mint",
+      "company": "PSA",
+      "fmv": 290,
+      "image": "https://8nothtoc5ds7a0x3.public.blob.vercel-storage.com/graded-cards-renders/PSA123148202/nft_image_standalone.png"
+    }
+  ]
+}

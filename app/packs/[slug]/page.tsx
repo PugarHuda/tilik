@@ -1,10 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import packsData from "@/data/packs.json";
+import cardsData from "@/data/cards.json";
 import { packStats, type Pack } from "@/lib/ev";
 import { usd, usd0, pct } from "@/lib/format";
 import { VERDICT } from "@/components/verdict";
 import { Histogram, TierOdds } from "@/components/landing/Bars";
+import { PackHistory } from "@/components/PackHistory";
 import { DetailHeader, DetailFooter } from "@/components/DetailChrome";
 
 const packs = () => (packsData.packs as Pack[]).filter((p) => p.pulls.length);
@@ -24,6 +27,9 @@ export default async function PackDetail({ params }: { params: Promise<{ slug: s
   const sorted = [...pack.pulls].sort((a, b) => b.fmv - a.fmv);
   const best = Math.max(...pack.pulls.map((p) => p.fmv));
   const worst = Math.min(...pack.pulls.map((p) => p.fmv));
+  const allCards = cardsData.cards as { image: string; pokemon?: string; name?: string }[];
+  const idx = packs().findIndex((p) => p.slug === slug);
+  const chase = allCards.length ? allCards[idx % allCards.length] : null;
 
   return (
     <main className="min-h-screen bg-app text-ink">
@@ -31,14 +37,18 @@ export default async function PackDetail({ params }: { params: Promise<{ slug: s
       <div className="mx-auto max-w-[1000px] px-6 py-8">
         {/* featured + summary */}
         <div className="grid gap-5 lg:grid-cols-2">
-          <div className="relative flex flex-col justify-between overflow-hidden rounded-3xl bg-grad-panel p-7 text-white shadow-[0_26px_56px_rgba(59,25,140,.3)]">
-            <div className="holo h-10 w-10 rounded-xl opacity-90" />
-            <div className="mt-8">
+          <div className="relative flex items-center justify-between gap-4 overflow-hidden rounded-3xl bg-grad-panel p-7 text-white shadow-[0_26px_56px_rgba(59,25,140,.3)]">
+            <div className="min-w-0">
               <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold">TOP CARD · the chase</span>
               <div className="mt-3 font-display text-2xl font-bold">Featured card in pool</div>
               <div className="mt-1 font-display text-[40px] font-bold leading-none">{usd0(s.featuredCardFmv)}</div>
               <div className="text-[13px] text-faint-violet">the advertised prize you&rsquo;re chasing</div>
             </div>
+            {chase && (
+              <div className="relative h-40 w-28 shrink-0 rotate-[6deg] overflow-hidden rounded-xl bg-white/10 shadow-lg ring-1 ring-white/15">
+                <Image src={chase.image} alt={chase.pokemon ?? "featured card"} fill sizes="112px" className="object-contain p-1" />
+              </div>
+            )}
           </div>
           <div className="rounded-3xl border border-line bg-white p-7 shadow-[0_20px_46px_rgba(30,20,70,.06)]">
             <div className="flex items-center justify-between">
@@ -57,6 +67,19 @@ export default async function PackDetail({ params }: { params: Promise<{ slug: s
               <Link href="/app#scanner" className="rounded-xl border border-line2 px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-soft">Cross-check a card</Link>
             </div>
           </div>
+        </div>
+
+        {/* price history */}
+        <div className="mt-5 rounded-3xl border border-line bg-white p-7">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold">Observed EV vs Renaiss&rsquo; stated EV</div>
+            <div className="flex gap-4 text-[11px] text-muted">
+              <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 rounded bg-violet" /> observed mean</span>
+              <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 rounded" style={{ background: "#a49dbb" }} /> stated EV</span>
+            </div>
+          </div>
+          <div className="mt-3"><PackHistory slug={pack.slug} mean={s.empiricalMean} stated={s.officialEV} /></div>
+          <p className="mt-1 text-[11px] text-muted">Illustrative trend around the current values — not a real time series.</p>
         </div>
 
         {/* dist + odds */}

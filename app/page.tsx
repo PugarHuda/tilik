@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import packsData from "@/data/packs.json";
 import scannerData from "@/data/scanner.json";
+import cardsData from "@/data/cards.json";
 import { packStats, type Pack } from "@/lib/ev";
 import { listingSignals, type Listing } from "@/lib/scanner";
 import { usd, usd0, pct } from "@/lib/format";
@@ -24,6 +26,7 @@ export default function Landing() {
   const listing = (scannerData.listings as Listing[]).find((l) => l.cert === "PSA82643863") ?? (scannerData.listings as Listing[])[0];
   const sig = listingSignals(listing);
   const askMax = Math.max(listing.ask, listing.renaissFmv, listing.index?.estimate ?? 0);
+  const cards = cardsData.cards as { image: string; pokemon?: string; name?: string }[];
 
   return (
     <main className="min-h-screen bg-white text-ink">
@@ -71,16 +74,20 @@ export default function Landing() {
           </Link>
         </div>
 
-        {/* fanned cards */}
+        {/* fanned cards — real graded card renders from Renaiss */}
         <div className="relative mx-auto mt-14 flex h-[300px] max-w-lg items-center justify-center sm:h-[380px]">
-          <div className="floaty absolute h-[200px] w-[150px] -translate-x-24 -rotate-[11deg] rounded-2xl bg-grad-panel shadow-[0_26px_56px_rgba(59,25,140,.28)] sm:h-[260px] sm:w-[190px]" style={{ animationDelay: "-2s" }} />
-          <div className="floaty absolute h-[200px] w-[150px] translate-x-24 rotate-[11deg] rounded-2xl bg-grad-pink shadow-[0_26px_56px_rgba(160,31,122,.28)] sm:h-[260px] sm:w-[190px]" style={{ animationDelay: "-4s" }} />
-          <div className="shimmer floaty relative z-10 flex h-[220px] w-[164px] flex-col justify-between overflow-hidden rounded-2xl bg-grad-panel p-4 text-left shadow-[0_30px_60px_rgba(59,25,140,.34)] sm:h-[280px] sm:w-[210px]">
-            <div className="holo h-8 w-8 rounded-lg opacity-90" />
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-wide text-faint-violet">Observed EV</div>
-              <div className="font-display text-3xl font-bold text-white">{usd(s.empiricalMean)}</div>
-              <div className="mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ background: v.bg, color: v.color }}>
+          <div className="floaty absolute h-[210px] w-[152px] -translate-x-24 -rotate-[11deg] overflow-hidden rounded-2xl bg-soft shadow-[0_26px_56px_rgba(59,25,140,.28)] ring-1 ring-black/5 sm:h-[268px] sm:w-[194px]" style={{ animationDelay: "-2s" }}>
+            <Image src={cards[1].image} alt={cards[1].pokemon ?? "card"} fill sizes="194px" className="object-contain p-1" />
+          </div>
+          <div className="floaty absolute h-[210px] w-[152px] translate-x-24 rotate-[11deg] overflow-hidden rounded-2xl bg-soft shadow-[0_26px_56px_rgba(160,31,122,.28)] ring-1 ring-black/5 sm:h-[268px] sm:w-[194px]" style={{ animationDelay: "-4s" }}>
+            <Image src={cards[2].image} alt={cards[2].pokemon ?? "card"} fill sizes="194px" className="object-contain p-1" />
+          </div>
+          <div className="floaty relative z-10 h-[230px] w-[168px] overflow-hidden rounded-2xl bg-ink shadow-[0_30px_60px_rgba(59,25,140,.34)] ring-1 ring-black/10 sm:h-[290px] sm:w-[212px]">
+            <Image src={cards[0].image} alt={cards[0].pokemon ?? "featured card"} fill sizes="212px" className="object-contain p-1" priority />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-3 pt-8 text-left">
+              <div className="text-[10px] font-medium uppercase tracking-wide text-faint-violet">Observed EV · {omega.name}</div>
+              <div className="font-display text-2xl font-bold text-white">{usd(s.empiricalMean)}</div>
+              <div className="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: v.bg, color: v.color }}>
                 {v.label}
               </div>
             </div>
@@ -138,8 +145,13 @@ export default function Landing() {
         <div className="mt-8 grid gap-5 lg:grid-cols-2">
           {/* cross-check card */}
           <div className="rounded-3xl bg-grad-panel p-7 text-white shadow-[0_26px_56px_rgba(59,25,140,.3)]">
-            <div className="flex items-center justify-between">
-              <span className="font-display text-lg font-semibold">{omega.name}</span>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="relative h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-white/10 ring-1 ring-white/15">
+                  <Image src={cards[0].image} alt={cards[0].pokemon ?? "card"} fill sizes="44px" className="object-contain p-0.5" />
+                </div>
+                <span className="font-display text-lg font-semibold">{omega.name}</span>
+              </div>
               <span className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: v.bg, color: v.color }}>
                 {v.label}
               </span>

@@ -43,7 +43,9 @@ function monte(pack: Pack, N: number, idx: number) {
 
 const signed0 = (n: number) => (n >= 0 ? "+" : "−") + usd0(Math.abs(n));
 
-export default function AppShell({ packs, listings }: { packs: Pack[]; listings: Listing[] }) {
+export type ChaseCard = { image: string; pokemon?: string; name?: string; fmv?: number };
+
+export default function AppShell({ packs, listings, cards }: { packs: Pack[]; listings: Listing[]; cards: ChaseCard[] }) {
   const [view, setView] = useState<View>("packs");
   const [packSlug, setPackSlug] = useState(packs[0].slug);
   const [ripN, setRipN] = useState(5);
@@ -64,6 +66,7 @@ export default function AppShell({ packs, listings }: { packs: Pack[]; listings:
   const v = VERDICT[s.verdict];
   const mc = useMemo(() => monte(pack, ripN, packIdx), [pack, ripN, packIdx]);
   const listing = listings.find((l) => l.cert === cert) ?? listings[0];
+  const chase = cards.length ? cards[packIdx % cards.length] : null;
 
   return (
     <div className="flex min-h-screen bg-app text-ink">
@@ -132,8 +135,15 @@ export default function AppShell({ packs, listings }: { packs: Pack[]; listings:
               <PackTabs packs={packs} active={packSlug} onPick={setPackSlug} />
               <div className="mt-5 grid gap-5 lg:grid-cols-2">
                 <div className="rounded-3xl bg-grad-panel p-7 text-white shadow-[0_26px_56px_rgba(59,25,140,.3)]">
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-lg font-semibold">{pack.name}</span>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      {chase && (
+                        <div className="relative h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-white/10 ring-1 ring-white/15">
+                          <Image src={chase.image} alt={chase.pokemon ?? "card"} fill sizes="44px" className="object-contain p-0.5" />
+                        </div>
+                      )}
+                      <span className="font-display text-lg font-semibold">{pack.name}</span>
+                    </div>
                     <span className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: v.bg, color: v.color }}>{v.label}</span>
                   </div>
                   <div className="mt-6 text-[13px] text-faint-violet">Observed mean EV (last {s.n} pulls)</div>

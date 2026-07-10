@@ -29,22 +29,27 @@ export function Histogram({ stats }: { stats: Stats }) {
   );
 }
 
+// Colour tiers by rank (highest observed value first): chase gold → pink → violet.
+const RANK_COLOR = ["#e9a50b", "#f25fa8", "#6c3bf4", "#6c3bf4"];
+
 export function TierOdds({ stats }: { stats: Stats }) {
   const maxFreq = Math.max(...stats.tiers.map((t) => t.share), 0.0001);
   return (
     <div className="space-y-2.5">
-      {stats.tiers.map((t) => (
+      {stats.tiers.map((t, i) => {
+        const color = TIER_COLOR[t.tier] ?? RANK_COLOR[i] ?? "#6c3bf4";
+        return (
         <div key={t.tier} className="flex items-center gap-3">
           <span
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white font-display"
-            style={{ background: TIER_COLOR[t.tier] ?? "#6c3bf4" }}
+            className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-lg px-2 text-xs font-bold capitalize text-white font-display"
+            style={{ background: color }}
           >
             {t.tier}
           </span>
           <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-line">
             <div
               className="h-full rounded-full transition-[width] duration-500"
-              style={{ width: `${(t.share / maxFreq) * 100}%`, background: TIER_COLOR[t.tier] ?? "#6c3bf4" }}
+              style={{ width: `${(t.share / maxFreq) * 100}%`, background: color }}
             />
           </div>
           <span className="w-10 shrink-0 text-right text-xs font-semibold text-bodytext font-display">
@@ -54,7 +59,8 @@ export function TierOdds({ stats }: { stats: Stats }) {
             {usd(t.meanFmv)}
           </span>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -58,7 +58,7 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
     <section className="rounded-2xl bg-zinc-900/70 p-5 ring-1 ring-white/10 sm:p-6">
       <h2 className="text-xl font-bold text-zinc-50">Should I rip?</h2>
       <p className="mt-1 text-sm text-zinc-400">
-        Monte Carlo: rip a pack {rips}× and see the range of outcomes, resampled {TRIALS.toLocaleString()}{" "}
+        Monte Carlo: rip a pack {rips}× and see the range of outcomes, resampled {TRIALS.toLocaleString("en-US")}{" "}
         times from its last {pack.fmvs.length} observed pulls.
       </p>
 
@@ -99,7 +99,7 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
 
       {!sim ? (
         <div className="mt-5 flex h-[316px] items-center justify-center text-sm text-zinc-500">
-          Simulating {TRIALS.toLocaleString()} runs…
+          Simulating {TRIALS.toLocaleString("en-US")} runs…
         </div>
       ) : (
         <>
@@ -118,7 +118,7 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
           {/* Distribution */}
           <div className="mt-5">
             <h3 className="mb-1 text-sm font-semibold text-zinc-200">
-              P&L distribution over {TRIALS.toLocaleString()} simulated runs
+              P&L distribution over {TRIALS.toLocaleString("en-US")} simulated runs
             </h3>
             <div
               role="img"
@@ -161,7 +161,7 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
               </ResponsiveContainer>
             </div>
             <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
-              Best of {TRIALS.toLocaleString()} runs: {signed(sim.best)} · worst: {signed(sim.worst)}.
+              Best of {TRIALS.toLocaleString("en-US")} runs: {signed(sim.best)} · worst: {signed(sim.worst)}.
               The right tail (rare high-value pulls) is clipped for readability. Resampled from a
               30-pull sample — an illustration of variance, not a prediction of your outcome.
             </p>

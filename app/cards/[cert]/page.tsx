@@ -11,6 +11,16 @@ export function generateStaticParams() {
   return listings().map((l) => ({ cert: l.cert }));
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ cert: string }> }) {
+  const { cert } = await params;
+  const l = listings().find((x) => x.cert.toUpperCase() === cert.toUpperCase());
+  if (!l) return { title: "Card not found · Tilik" };
+  return {
+    title: `${l.cert} — independent valuation · Tilik`,
+    description: `${l.name} (${l.gradingCompany} ${l.grade}): Renaiss FMV vs an independent estimate${l.index ? ` of ${usd(l.index.estimate)}` : ""}. Cross-check before you buy.`,
+  };
+}
+
 function bandPill(band: string) {
   if (band === "above") return { bg: "#fef1f3", color: "#e23d53", label: "▲ Ask sits ABOVE the estimate" };
   if (band === "below") return { bg: "#ecfdf3", color: "#16a34a", label: "▼ Ask sits BELOW the estimate" };

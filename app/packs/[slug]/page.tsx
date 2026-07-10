@@ -16,6 +16,17 @@ export function generateStaticParams() {
   return packs().map((p) => ({ slug: p.slug }));
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const pack = packs().find((p) => p.slug === slug);
+  if (!pack) return { title: "Pack not found · Tilik" };
+  const s = packStats(pack);
+  return {
+    title: `${pack.name} — EV, odds & verdict · Tilik`,
+    description: `${pack.name}: $${pack.ripPrice} rip, observed mean EV ${usd(s.empiricalMean)}, ${VERDICT[s.verdict].label}. Independent EV & odds for the Renaiss gacha pack.`,
+  };
+}
+
 const pullColor = (m: number) => (m < 1 ? "#e23d53" : m < 2 ? "#16a34a" : "#e9a50b");
 
 export default async function PackDetail({ params }: { params: Promise<{ slug: string }> }) {

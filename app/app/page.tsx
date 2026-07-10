@@ -5,6 +5,11 @@ import type { Pack } from "@/lib/ev";
 import type { Listing } from "@/lib/scanner";
 import AppShell, { type ChaseCard } from "@/components/app/AppShell";
 
+export const metadata = {
+  title: "Tilik app — packs, scanner, simulator, on-chain",
+  description: "The Tilik dashboard: pack EV & odds, independent price scanner, Monte Carlo simulator, and on-chain provenance.",
+};
+
 export default function AppPage() {
   const packs = (packsData.packs as Pack[]).filter((p) => p.pulls.length).sort((a, b) => a.ripPrice - b.ripPrice);
   const listings = scannerData.listings as Listing[];

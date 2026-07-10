@@ -58,7 +58,7 @@ export default function Landing() {
           <span className="h-1.5 w-1.5 rounded-full bg-violet" />
           INDEPENDENT · Not affiliated with Renaiss · estimates only
         </span>
-        <h1 className="mx-auto mt-6 max-w-3xl text-[42px] font-bold leading-[1.03] tracking-[-1.5px] sm:text-[66px] sm:tracking-[-2px]">
+        <h1 className="mx-auto mt-6 max-w-3xl text-balance text-center text-[42px] font-bold leading-[1.03] tracking-[-1.5px] sm:text-[66px] sm:tracking-[-2px]">
           Know your rip <span className="text-violet">before</span> you rip
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-[17px] leading-relaxed text-bodytext sm:text-lg">

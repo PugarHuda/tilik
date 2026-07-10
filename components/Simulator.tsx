@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Cell, Tooltip, ReferenceLine, ResponsiveContainer } from "recharts";
 import { simulate } from "@/lib/ev";
 import { usd } from "@/lib/format";
@@ -42,11 +42,16 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
   const [rips, setRips] = useState(10);
   const pack = packs.find((p) => p.slug === slug)!;
 
+  // Monte Carlo uses Math.random — run it only after mount so the server HTML
+  // and the first client render match (no hydration mismatch).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const sim = useMemo(
-    () => simulate(pack.fmvs, pack.ripPrice, rips, TRIALS, Math.random),
-    [pack, rips],
+    () => (mounted ? simulate(pack.fmvs, pack.ripPrice, rips, TRIALS, Math.random) : null),
+    [pack, rips, mounted],
   );
-  const bins = useMemo(() => binPnls(sim.pnls), [sim]);
+  const bins = useMemo(() => (sim ? binPnls(sim.pnls) : []), [sim]);
   const spend = rips * pack.ripPrice;
 
   return (
@@ -92,69 +97,77 @@ export default function Simulator({ packs }: { packs: SimPack[] }) {
         />
       </div>
 
-      {/* Results */}
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Metric
-          label="Expected P&L"
-          value={signed(sim.mean)}
-          tone={sim.mean >= 0 ? "text-emerald-300" : "text-rose-300"}
-        />
-        <Metric label="Chance of profit" value={`${(sim.pProfit * 100).toFixed(0)}%`} />
-        <Metric label="Typical range (p10–p90)" value={`${signed(sim.p10)} … ${signed(sim.p90)}`} />
-        <Metric label="Median outcome" value={signed(sim.p50)} />
-      </div>
-
-      {/* Distribution */}
-      <div className="mt-5">
-        <h3 className="mb-1 text-sm font-semibold text-zinc-200">
-          P&L distribution over {TRIALS.toLocaleString()} simulated runs
-        </h3>
-        <div
-          role="img"
-          aria-label={`P&L distribution over ${TRIALS} simulated runs of ${rips} rips: expected ${signed(
-            sim.mean,
-          )}, ${(sim.pProfit * 100).toFixed(0)}% chance of profit, typical range ${signed(
-            sim.p10,
-          )} to ${signed(sim.p90)}.`}
-        >
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={bins} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
-            <XAxis
-              dataKey="x"
-              type="number"
-              domain={["dataMin", "dataMax"]}
-              tickFormatter={(v: number) => signed(v)}
-              tick={{ fill: "#a1a1aa", fontSize: 10 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis hide />
-            <Tooltip
-              cursor={{ fill: "#ffffff10" }}
-              contentStyle={{
-                background: "#18181b",
-                border: "1px solid #3f3f46",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              labelFormatter={(v: number) => `≈ ${signed(v)}`}
-              formatter={(v: number) => [`${v} runs`, "count"]}
-            />
-            <ReferenceLine x={0} stroke="#71717a" strokeDasharray="3 3" />
-            <Bar dataKey="count" radius={[3, 3, 0, 0]}>
-              {bins.map((b, i) => (
-                <Cell key={i} fill={b.x >= 0 ? "#34d399" : "#fb7185"} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+      {!sim ? (
+        <div className="mt-5 flex h-[316px] items-center justify-center text-sm text-zinc-500">
+          Simulating {TRIALS.toLocaleString()} runs…
         </div>
-        <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
-          Best of {TRIALS.toLocaleString()} runs: {signed(sim.best)} · worst: {signed(sim.worst)}. The
-          right tail (rare high-value pulls) is clipped for readability. Resampled from a 30-pull
-          sample — an illustration of variance, not a prediction of your outcome.
-        </p>
-      </div>
+      ) : (
+        <>
+          {/* Results */}
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Metric
+              label="Expected P&L"
+              value={signed(sim.mean)}
+              tone={sim.mean >= 0 ? "text-emerald-300" : "text-rose-300"}
+            />
+            <Metric label="Chance of profit" value={`${(sim.pProfit * 100).toFixed(0)}%`} />
+            <Metric label="Typical range (p10–p90)" value={`${signed(sim.p10)} … ${signed(sim.p90)}`} />
+            <Metric label="Median outcome" value={signed(sim.p50)} />
+          </div>
+
+          {/* Distribution */}
+          <div className="mt-5">
+            <h3 className="mb-1 text-sm font-semibold text-zinc-200">
+              P&L distribution over {TRIALS.toLocaleString()} simulated runs
+            </h3>
+            <div
+              role="img"
+              aria-label={`P&L distribution over ${TRIALS} simulated runs of ${rips} rips: expected ${signed(
+                sim.mean,
+              )}, ${(sim.pProfit * 100).toFixed(0)}% chance of profit, typical range ${signed(
+                sim.p10,
+              )} to ${signed(sim.p90)}.`}
+            >
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={bins} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
+                  <XAxis
+                    dataKey="x"
+                    type="number"
+                    domain={["dataMin", "dataMax"]}
+                    tickFormatter={(v: number) => signed(v)}
+                    tick={{ fill: "#a1a1aa", fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis hide />
+                  <Tooltip
+                    cursor={{ fill: "#ffffff10" }}
+                    contentStyle={{
+                      background: "#18181b",
+                      border: "1px solid #3f3f46",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    labelFormatter={(v: number) => `≈ ${signed(v)}`}
+                    formatter={(v: number) => [`${v} runs`, "count"]}
+                  />
+                  <ReferenceLine x={0} stroke="#71717a" strokeDasharray="3 3" />
+                  <Bar dataKey="count" radius={[3, 3, 0, 0]}>
+                    {bins.map((b, i) => (
+                      <Cell key={i} fill={b.x >= 0 ? "#34d399" : "#fb7185"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+              Best of {TRIALS.toLocaleString()} runs: {signed(sim.best)} · worst: {signed(sim.worst)}.
+              The right tail (rare high-value pulls) is clipped for readability. Resampled from a
+              30-pull sample — an illustration of variance, not a prediction of your outcome.
+            </p>
+          </div>
+        </>
+      )}
     </section>
   );
 }

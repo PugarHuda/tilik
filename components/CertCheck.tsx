@@ -81,6 +81,8 @@ export default function CertCheck() {
           value={cert}
           onChange={(e) => setCert(e.target.value)}
           placeholder="e.g. PSA82643863"
+          aria-label="Grading cert number"
+          autoComplete="off"
           className="min-w-0 flex-1 rounded-lg bg-zinc-800/60 px-3 py-2 text-sm text-zinc-100 ring-1 ring-white/10 outline-none placeholder:text-zinc-500 focus:ring-emerald-500/40"
         />
         <button
